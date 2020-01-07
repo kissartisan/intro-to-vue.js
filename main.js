@@ -29,10 +29,6 @@ Vue.component('product', {
         Add to Cart
       </button>
 
-      <div class="cart">
-        <p>Cart {{ cart }}</p>
-      </div>
-
       <div v-for="(variant, index) in variants"
       :key="variant.variantId"
       class="color-box"
@@ -59,15 +55,14 @@ Vue.component('product', {
         variantId: 2235,
         variantColor: "blue",
         variantImage: './assets/vmSocks-blue-onWhite.jpg',
-        variantQuantity: 0
+        variantQuantity: 2
       }
-      ],
-      cart: 0
-    }
+      ]    }
   },
   methods: {
     addToCart() {
-      this.cart += 1
+      this.$emit('add-to-cart',
+        this.variants[this.selectedVariant].variantId);
     },
     updateProduct(index) {
       this.selectedVariant = index;
@@ -96,6 +91,12 @@ Vue.component('product', {
 var app = new Vue({
   el: '#app',
   data: {
-    premium: true
+    premium: true,
+    cart: []
+  },
+  methods: {
+    updateCart(id) {
+      this.cart.push(id);
+    }
   }
 });

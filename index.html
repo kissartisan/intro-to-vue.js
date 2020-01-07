@@ -1,27 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Product</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Product</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="nav-var"></div>
+  <div class="nav-var"></div>
 
-    <div id="app">
-        <div class="product">
-            <div class="product-image">
-                <img v-bind:src="image">
-            </div>
+  <div id="app">
+    <div class="product">
+      <div class="product-image">
+        <img v-bind:src="image">
+      </div>
 
-            <div class="product-info">
-                <h1>{{ product }}</h1>
-                <p v-show="inStock">In Stock</p>
-            </div>
+      <div class="product-info">
+        <h1>{{ product }}</h1>
+        <p v-show="inStock">In Stock</p>
+        <p v-else>Out of Stock</p>
+
+        <ul>
+          <li v-for="detail in details">
+            {{ detail }}
+          </li>
+        </ul>
+
+        <div v-for="variant in variants" :key>
+          <p>{{ variant.variantColor }}</p>
         </div>
-    </div>
+      </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="main.js"></script>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

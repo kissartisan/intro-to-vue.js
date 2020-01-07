@@ -30,12 +30,29 @@ Vue.component('product', {
       </button>
 
       <div v-for="(variant, index) in variants"
-      :key="variant.variantId"
-      class="color-box"
-      :style="{ backgroundColor: variant.variantColor }"
-      @mouseover="updateProduct(index)">
+        :key="variant.variantId"
+        class="color-box"
+        :style="{ backgroundColor: variant.variantColor }"
+        @mouseover="updateProduct(index)">
       </div>
     </div>
+
+    <div>
+      <h2>Reviews</h2>
+      <p v-if=!reviews.length>
+        There are no reviews yet.
+      </p>
+      <ul>
+        <li v-for="review in reviews">
+          <p>{{ review.name }}</p>
+          <p>{{ review.rating }}</p>
+          <p>{{ review.review }}</p>
+        </li>
+      </ul>
+
+    </div>
+    <product-review @review-submitted="addReview">
+    </product-review>
   </div>
   `,
   data() {
@@ -57,7 +74,9 @@ Vue.component('product', {
         variantImage: './assets/vmSocks-blue-onWhite.jpg',
         variantQuantity: 2
       }
-      ]    }
+      ],
+      reviews: []
+    }
   },
   methods: {
     addToCart() {
@@ -66,6 +85,9 @@ Vue.component('product', {
     },
     updateProduct(index) {
       this.selectedVariant = index;
+    },
+    addReview(productReview) {
+      this.reviews.push(productReview);
     }
   },
   computed: {
@@ -84,6 +106,72 @@ Vue.component('product', {
       }
 
       return 2.99;
+    }
+  }
+});
+
+Vue.component('product-review', {
+  template: `
+    <form class="review-form" @submit.prevent="onSubmit">
+      <p v-if="errors.length">
+        <strong>PLease corrent the following errors:</strong>
+        <ul>
+          <li v-for="error in errors">{{ error }}</li>
+        </ul>
+      </p>
+      <p>
+        <label for="name">Name:</label>
+        <input id="name" v-model="name">
+      </p>
+      <p>
+        <label for="review">Review:</label>
+        <textarea v-model="review"></textarea>
+      </p>
+      <p>
+        <label for="rating">Rating:</label>
+        <select id="rating" v-model.number="rating">
+          <option value="5">5</option>
+          <option value="4">4</option>
+          <option value="3">3</option>
+          <option value="2">2</option>
+          <option value="1">1</option>
+        </select>
+      </p>
+      <p>
+        <input type="submit" value="Submit" />
+      </p>
+    </form>
+  `,
+  data() {
+    return {
+      name: null,
+      review: null,
+      rating: null,
+      errors: []
+    }
+  },
+  methods: {
+    onSubmit() {
+      if (this.name && this.review && this.rating) {
+        let productReview = {
+          name: this.name,
+          review: this.review,
+          rating: this.rating
+        };
+
+        this.$emit('review-submitted', productReview);
+
+        this.name = null;
+        this.review = null;
+        this.rating  =null;
+      } else {
+        this.errors = [];
+
+        if (!this.name) this.errors.push("Name required.");
+        if (!this.review) this.errors.push("Review required.");
+        if (!this.rating) this.errors.push("Rating required.");
+      }
+
     }
   }
 });
